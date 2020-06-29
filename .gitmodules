@@ -1,0 +1,4 @@
+[submodule "injection-api"]
+	path = injection-api
+	url = https://github.com/eclipse-ee4j/injection-api.git
+	branch = master
