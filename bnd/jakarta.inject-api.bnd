@@ -1,0 +1,4 @@
+-removeheaders: Private-Package
+
+-exportcontents: \
+    javax.inject
