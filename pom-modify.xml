@@ -14,7 +14,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <artifactId-modifier>injection-api-osgi</artifactId-modifier>
+        <artifactId-modifier>jakarta.inject-api-osgi</artifactId-modifier>
         <pomFile-to-alter>injection-api/pom.xml</pomFile-to-alter>
         <pomutils-maven-plugin.version>1.1.0</pomutils-maven-plugin.version>
 
