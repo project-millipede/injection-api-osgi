@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>jakarta.inject</groupId>
+    <artifactId>jakarta.inject-api-osgi-modify</artifactId>
+    <version>${jakarta.inject-api.version}</version>
+
+    <name>Jakarta :: Inject :: API :: OSGi :: Modify</name>
+
+    <packaging>pom</packaging>
+
+    <properties>
+        <artifactId-modifier>injection-api-osgi</artifactId-modifier>
+        <pomFile-to-alter>injection-api/pom.xml</pomFile-to-alter>
+        <pomutils-maven-plugin.version>1.1.0</pomutils-maven-plugin.version>
+
+        <!-- Parent from original project -->
+        <parent.groupId>org.eclipse.ee4j</parent.groupId>
+        <parent.artifactId>project</parent.artifactId>
+        <parent.version>1.0.6</parent.version>
+
+        <pomFile-template-to-alter>pom.xml</pomFile-template-to-alter>
+
+        <!--
+        Specific version of the original project.
+        export JAKARTA_INJECT_API_VERSION=$(mvn help:evaluate -f injection-api/pom.xml -Dexpression=project.version -q -DforceStdout)
+        -->
+        <jakarta.inject-api.version>0.0.0</jakarta.inject-api.version>
+    </properties>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>info.bluespot</groupId>
+                    <artifactId>pomutils-maven-plugin</artifactId>
+                    <version>${pomutils-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>add-a-parent</id>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>add-parent</goal>
+                            </goals>
+                            <configuration>
+                                <groupId>${project.groupId}</groupId>
+                                <artifactId>${artifactId-modifier}</artifactId>
+                                <version>${jakarta.inject-api.version}</version>
+                                <pomFile>${pomFile-to-alter}</pomFile>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>add-a-custom-parent</id>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>add-parent</goal>
+                            </goals>
+                            <configuration>
+                                <groupId>${parent.groupId}</groupId>
+                                <artifactId>${parent.artifactId}</artifactId>
+                                <version>${parent.version}</version>
+                                <pomFile>${pomFile-template-to-alter}</pomFile>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>modify-project</id>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>modify-project</goal>
+                            </goals>
+                            <configuration>
+                                <version>${jakarta.inject-api.version}</version>
+                                <pomFile>${pomFile-template-to-alter}</pomFile>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>info.bluespot</groupId>
+                <artifactId>pomutils-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
