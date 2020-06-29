@@ -1,0 +1,39 @@
+image: maven:3.6.3-jdk-11
+
+variables:
+  GIT_SUBMODULE_STRATEGY: normal
+  MAVEN_MODIFY_CLI_OPTS: "-s settings-modify.xml"
+  MAVEN_CLI_OPTS: "-s settings.xml"
+
+cache:
+  paths:
+    - ~/.m2/repository
+    - target/
+
+before_script:
+  # Integration of the latest stable code base using the most recent Git release tag
+  - git submodule foreach 'git fetch origin; git checkout 1.0.1'
+  # Determination of the version number
+  - export JAKARTA_INJECT_API_VERSION=$(mvn help:evaluate -f injection-api/pom.xml -Dexpression=project.version -q -DforceStdout)
+
+stages:
+  - build
+  - deploy
+
+build_feature:
+  stage: build
+  script:
+    - mvn ${MAVEN_MODIFY_CLI_OPTS} clean install -f pom-modify.xml
+    - mvn ${MAVEN_CLI_OPTS} clean install
+  except:
+    refs:
+      - master
+
+deploy_artifacts:
+  stage: deploy
+  script:
+    - mvn ${MAVEN_MODIFY_CLI_OPTS} clean install -f pom-modify.xml
+    - mvn ${MAVEN_CLI_OPTS} clean install deploy
+  only:
+    refs:
+      - master
